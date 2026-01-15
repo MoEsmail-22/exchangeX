@@ -247,15 +247,7 @@ inputDate.addEventListener('change', async function () {
     currency2
   );
 });
-inputDate.addEventListener('change', function () {
-  currenyes();
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
+
 currencyType1.addEventListener('change', function () {
   convertingFunctuin(
     currencyType1.value,
@@ -302,3 +294,4 @@ function convertingFunctuin(t1, t2, c1, c2) {
   c2.value = converted.toFixed(3);
   c2.textContent = c2.value;
 }
+
