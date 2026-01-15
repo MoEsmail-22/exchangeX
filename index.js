@@ -204,7 +204,7 @@ async function currenyes() {
     currencysArr = currencysArr.filter(c => FIAT_CODES.includes(c.code));
 
     currencysArr[currencysArr.findIndex(r => r.code === 'ILS')].name =
-      'palestinian shekel';
+      'Palestinian shekel';
 
     renderOptions();
   } catch (err) {
@@ -285,6 +285,8 @@ currency2.addEventListener('input', function () {
 });
 
 function convertingFunctuin(t1, t2, c1, c2) {
+    await currenyes();
+  await convert();
   const fromCode = t1;
   const toCode = t2;
   const c1Rate = Number(ratesArr.find(r => r.code === fromCode)?.rate);
@@ -294,4 +296,5 @@ function convertingFunctuin(t1, t2, c1, c2) {
   c2.value = converted.toFixed(3);
   c2.textContent = c2.value;
 }
+
 
