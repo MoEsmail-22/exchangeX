@@ -1,300 +1,115 @@
-'use strict';
+<!DOCTYPE html>
+<html lang="en">
 
-const currency1 = document.querySelector('#c1');
-const currencyType1 = document.querySelector('#counrty1');
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExchangeX</title>
+    <link rel="icon" type="image/x-icon" href="./imgs/svgviewer-output.svg">
 
-const currency2 = document.querySelector('#c2');
-const currencyType2 = document.querySelector('#counrty2');
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/mobile-style.css">
+    <link rel="stylesheet" href="./style/normalize.css">
+    <link rel="stylesheet" href="./style/all.min.css">
 
-const options = document.querySelectorAll('.options');
-const defultOption = document.querySelectorAll('.defult-option');
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
-const inputDate = document.querySelector('.date-input');
-const swithc = document.querySelector('.switch');
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
-const date = new Date();
-// const today
+    <script defer src="index.js"></script>
+</head>
 
-inputDate.value = inputDate.max = date.toISOString().split('T')[0];
+<body>
+    <header>
+        <nav>
+            <ul class="display-flex">
+                <li>
+                    <div class="logo display-flex">
+                        <img src="./imgs/exchangex-high-resolution-logo-transparent.png" alt="logo-exchangex">
+                        <p>exchangeX</p>
+                    </div>
+                </li>
+                <div class="contact-about display-flex">
+                    <li><a href="#contact-about">about</a></li>
+                    <li><a class="contact" href="#contact-about">contact</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
 
-// prettier-ignore
-const FIAT_CODES = [
-  // 🌍 Major
-  'USD',
-  'EUR',
-  'GBP',
-  'JPY',
-  'CNY',
-  'CHF',
-  'CAD',
-  'AUD',
-  'NZD',
+    <section class="landing display-flex">
+        <h1>exchangeX</h1>
+        <p>fast and easy currency converter</p>
+    </section>
+    <div class="container">
+        <section class="sec1 display-flex" id="sec1">
+            <div class="convert">
+                <form class="form display-flex" action="">
+                    <div class="cuurency-inputs display-flex ">
+                        <div class="user-input1 display-flex user-input">
+                            <input type="number" pattern="[0-9]" min="1" placeholder="1" name="c1" id="c1">
+                            <select name="coutrys" id="counrty1" class="options">
+                                <option value="" class="defult-option">select currency </option>
+                            </select>
+                        </div>
+                        <div class="switch display-flex">
+                            <i class="fa-solid fa-arrow-right-arrow-left fa-lg" style="color: #0f4917;"></i>
+                        </div>
+                        <div class="user-input2 display-flex user-input">
+                            <input type="number" pattern="[0-9]*" min="1" placeholder="1" name="c2" id="c2">
+                            <select name="coutrys" id="counrty2" class="options">
+                                <option value="" class="defult-option">select currency </option>
+                            </select>
+                        </div>
+                    </div>
+                    <input class="date-input" type="date" name="date" id="date" min="2018-01-01">
+                </form>
+            </div>
 
-  // 🇪🇺 Europe
-  'SEK',
-  'NOK',
-  'DKK',
-  'PLN',
-  'CZK',
-  'HUF',
-  'RON',
-  'BGN',
-  'HRK',
-  'ISK',
-  'UAH',
-  'RUB',
-  'TRY',
-  'ALL',
-  'BAM',
-  'MKD',
-  'RSD',
-  'MDL',
-  'GEL',
-  'AMD',
-  'AZN',
-  'BYN',
+        </section>
+    </div>
+    <footer>
+        <div class="footter-content  display-flex">
+            <div class="contact-footer display-flex">
+                <a href=" #">
+                    <div class="logo display-flex">
+                        <img src="./imgs/exchangex-high-resolution-logo-transparent.png" alt="logo-exchangex">
+                        <p>exchangeX</p>
+                    </div>
+                </a>
 
-  // 🌍 Americas
-  'MXN',
-  'BRL',
-  'ARS',
-  'CLP',
-  'COP',
-  'PEN',
-  'UYU',
-  'PYG',
-  'BOB',
-  'VES',
-  'DOP',
-  'CRC',
-  'GTQ',
-  'HNL',
-  'NIO',
-  'SVC',
-  'JMD',
-  'TTD',
-  'BBD',
-  'BSD',
-  'BZD',
-  'SRD',
-  'GYD',
-  'AWG',
-  'ANG',
-  'HTG',
-  'CUP',
+                <p class="location cb" id="contact-about">123 home, the Great Pyramid, Egypt</p>
+                <p class="call cb">+20123456789</p>
+                <p class="email cb">contact@exchangeX.com</p>
+                <div class="findUs display-flex">
+                    <div class=" icon display-flex "><a href="https://github.com/MoEsmail-22" target="_blank"><i
+                                class="fa-brands fa-github"></i></a></div>
+                    <div class="icon display-flex "><i class="fa-brands fa-facebook"></i></i></div>
+                    <div class="icon display-flex"><i class="fa-brands fa-whatsapp"></i></i></div>
+                </div>
+            </div>
+            <div class="email-us">
+                <p>Have a Question?</p>
+                <form action="" class="display-flex"> <input type="text" name="email" id="email"
+                        placeholder="what is this name?">
+                    <label for="email">Send</label>
+                </form>
+            </div>
+        </div>
+        </div>
+        <div class="ending display-flex">
+            <h3>made by <a href="https://github.com/MoEsmail-22 " target="_blank"
+                    style="color:  #fff;">@mohamedEsmail</a>-2026</h3>
+        </div>
+    </footer>
 
-  // 🌍 Middle East
-  'EGP',
-  'AED',
-  'SAR',
-  'QAR',
-  'KWD',
-  'BHD',
-  'OMR',
-  'ILS',
-  'JOD',
-  'IQD',
-  'IRR',
-  'LBP',
-  'SYP',
-  'YER',
+</body>
 
-  // 🌍 Africa
-  'ZAR',
-  'NGN',
-  'GHS',
-  'KES',
-  'UGX',
-  'TZS',
-  'ETB',
-  'MAD',
-  'TND',
-  'DZD',
-  'XOF',
-  'XAF',
-  'XCD',
-  'SDG',
-  'SSP',
-  'RWF',
-  'BIF',
-  'MWK',
-  'ZMW',
-  'BWP',
-  'NAD',
-  'SZL',
-  'LSL',
-  'MUR',
-  'SCR',
-  'SLL',
-  'GMD',
-  'AOA',
-  'CDF',
-  'DJF',
-  'ERN',
-  'SOS',
-  'KMF',
-  'STN',
-  'CVE',
-  'LRD',
-
-  // 🌍 Asia
-  'INR',
-  'PKR',
-  'BDT',
-  'LKR',
-  'NPR',
-  'BTN',
-  'MMK',
-  'THB',
-  'MYR',
-  'IDR',
-  'PHP',
-  'VND',
-  'KHR',
-  'LAK',
-  'SGD',
-  'HKD',
-  'TWD',
-  'KRW',
-  'MNT',
-  'KZT',
-  'UZS',
-  'TJS',
-  'AFN',
-  'MVR',
-  'BND',
-  'FJD',
-
-  // 🌍 Oceania
-  'PGK',
-  'SBD',
-  'TOP',
-  'WST',
-  'VUV',
-];
-
-let currencysArr = [];
-let ratesArr = [];
-
-//load options
-function renderOptions() {
-  const HTML = currencysArr
-    .map(
-      x =>
-        `<option class="currency-type" value="${x.code}">
-          ${x.name}
-        </option>`
-    )
-    .join('');
-  options.forEach(el => el.insertAdjacentHTML('beforeend', HTML));
-}
-
-async function currenyes() {
-  try {
-    const testAPi = await fetch(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${inputDate.value}/v1/currencies.json`
-    );
-    const data = await testAPi.json();
-
-    currencysArr = Object.entries(data).map(([code, name]) => ({
-      code: code.toUpperCase(),
-      name,
-    }));
-
-    currencysArr = currencysArr.filter(c => FIAT_CODES.includes(c.code));
-
-    currencysArr[currencysArr.findIndex(r => r.code === 'ILS')].name =
-      'Palestinian shekel';
-
-    renderOptions();
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-async function convert() {
-  try {
-    const rateToEU = await fetch(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${inputDate.value}/v1/currencies/eur.json`
-    );
-    const data = await rateToEU.json();
-
-    ratesArr = Object.entries(data.eur).map(([code, rate]) => ({
-      code: code.toUpperCase(),
-      rate,
-    }));
-
-    ratesArr = ratesArr.filter(c => FIAT_CODES.includes(c.code));
-    return ratesArr;
-  } catch (err) {
-    console.error(err);
-  }
-}
-currenyes();
-convert();
-
-defultOption[0].textContent = 'US Dollar';
-defultOption[0].value = 'USD';
-
-inputDate.addEventListener('change', async function () {
-  await currenyes();
-  await convert();
-
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currencyType1.addEventListener('change', function () {
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currencyType2.addEventListener('change', function () {
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currency1.addEventListener('input', function () {
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currency2.addEventListener('input', function () {
-  convertingFunctuin(
-    currencyType2.value,
-    currencyType1.value,
-    currency2,
-    currency1
-  );
-});
-
-function convertingFunctuin(t1, t2, c1, c2) {
-    await currenyes();
-  await convert();
-  const fromCode = t1;
-  const toCode = t2;
-  const c1Rate = Number(ratesArr.find(r => r.code === fromCode)?.rate);
-  const c2Rate = Number(ratesArr.find(r => r.code === toCode)?.rate);
-
-  const converted = (Number(c1.value) / c1Rate) * c2Rate;
-  c2.value = converted.toFixed(3);
-  c2.textContent = c2.value;
-}
-
-
+</html>
