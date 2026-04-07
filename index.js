@@ -13,289 +13,200 @@ const inputDate = document.querySelector('.date-input');
 const swithc = document.querySelector('.switch');
 
 const date = new Date();
-// const today
-
 inputDate.value = inputDate.max = date.toISOString().split('T')[0];
 
 // prettier-ignore
 const FIAT_CODES = [
-  // 🌍 Major
-  'USD',
-  'EUR',
-  'GBP',
-  'JPY',
-  'CNY',
-  'CHF',
-  'CAD',
-  'AUD',
-  'NZD',
-
-  // 🇪🇺 Europe
-  'SEK',
-  'NOK',
-  'DKK',
-  'PLN',
-  'CZK',
-  'HUF',
-  'RON',
-  'BGN',
-  'HRK',
-  'ISK',
-  'UAH',
-  'RUB',
-  'TRY',
-  'ALL',
-  'BAM',
-  'MKD',
-  'RSD',
-  'MDL',
-  'GEL',
-  'AMD',
-  'AZN',
-  'BYN',
-
-  // 🌍 Americas
-  'MXN',
-  'BRL',
-  'ARS',
-  'CLP',
-  'COP',
-  'PEN',
-  'UYU',
-  'PYG',
-  'BOB',
-  'VES',
-  'DOP',
-  'CRC',
-  'GTQ',
-  'HNL',
-  'NIO',
-  'SVC',
-  'JMD',
-  'TTD',
-  'BBD',
-  'BSD',
-  'BZD',
-  'SRD',
-  'GYD',
-  'AWG',
-  'ANG',
-  'HTG',
-  'CUP',
-
-  // 🌍 Middle East
-  'EGP',
-  'AED',
-  'SAR',
-  'QAR',
-  'KWD',
-  'BHD',
-  'OMR',
-  'ILS',
-  'JOD',
-  'IQD',
-  'IRR',
-  'LBP',
-  'SYP',
-  'YER',
-
-  // 🌍 Africa
-  'ZAR',
-  'NGN',
-  'GHS',
-  'KES',
-  'UGX',
-  'TZS',
-  'ETB',
-  'MAD',
-  'TND',
-  'DZD',
-  'XOF',
-  'XAF',
-  'XCD',
-  'SDG',
-  'SSP',
-  'RWF',
-  'BIF',
-  'MWK',
-  'ZMW',
-  'BWP',
-  'NAD',
-  'SZL',
-  'LSL',
-  'MUR',
-  'SCR',
-  'SLL',
-  'GMD',
-  'AOA',
-  'CDF',
-  'DJF',
-  'ERN',
-  'SOS',
-  'KMF',
-  'STN',
-  'CVE',
-  'LRD',
-
-  // 🌍 Asia
-  'INR',
-  'PKR',
-  'BDT',
-  'LKR',
-  'NPR',
-  'BTN',
-  'MMK',
-  'THB',
-  'MYR',
-  'IDR',
-  'PHP',
-  'VND',
-  'KHR',
-  'LAK',
-  'SGD',
-  'HKD',
-  'TWD',
-  'KRW',
-  'MNT',
-  'KZT',
-  'UZS',
-  'TJS',
-  'AFN',
-  'MVR',
-  'BND',
-  'FJD',
-
-  // 🌍 Oceania
-  'PGK',
-  'SBD',
-  'TOP',
-  'WST',
-  'VUV',
+  'USD','EUR','GBP','JPY','CNY','CHF','CAD','AUD','NZD',
+  'SEK','NOK','DKK','PLN','CZK','HUF','RON','BGN','HRK','ISK','UAH','RUB','TRY','ALL','BAM','MKD','RSD','MDL','GEL','AMD','AZN','BYN',
+  'MXN','BRL','ARS','CLP','COP','PEN','UYU','PYG','BOB','VES','DOP','CRC','GTQ','HNL','NIO','SVC','JMD','TTD','BBD','BSD','BZD','SRD','GYD','AWG','ANG','HTG','CUP',
+  'EGP','AED','SAR','QAR','KWD','BHD','OMR','ILS','JOD','IQD','IRR','LBP','SYP','YER',
+  'ZAR','NGN','GHS','KES','UGX','TZS','ETB','MAD','TND','DZD','XOF','XAF','XCD','SDG','SSP','RWF','BIF','MWK','ZMW','BWP','NAD','SZL','LSL','MUR','SCR','SLL','GMD','AOA','CDF','DJF','ERN','SOS','KMF','STN','CVE','LRD',
+  'INR','PKR','BDT','LKR','NPR','BTN','MMK','THB','MYR','IDR','PHP','VND','KHR','LAK','SGD','HKD','TWD','KRW','MNT','KZT','UZS','TJS','AFN','MVR','BND','FJD',
+  'PGK','SBD','TOP','WST','VUV',
 ];
 
 let currencysArr = [];
-let ratesArr = [];
+let ratesMap = new Map();
+let isLoading = false;
 
-//load options
+function setLoading(state) {
+  isLoading = state;
+
+  currency1.disabled = state;
+  currency2.disabled = state;
+  currencyType1.disabled = state;
+  currencyType2.disabled = state;
+  inputDate.disabled = state;
+  if (swithc) swithc.disabled = state;
+}
+
+function clearOptions() {
+  options.forEach(select => {
+    select.innerHTML = '';
+  });
+}
+
 function renderOptions() {
-  const HTML = currencysArr
+  clearOptions();
+
+  // ✅ sorted COPY (not mutating original)
+  const sortedCurrencies = [...currencysArr].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
+  const html = sortedCurrencies
     .map(
-      x =>
-        `<option class="currency-type" value="${x.code}">
-          ${x.name}
-        </option>`
+      currency => `
+        <option class="currency-type" value="${currency.code}">
+          ${currency.name}
+        </option>
+      `
     )
     .join('');
-  options.forEach(el => el.insertAdjacentHTML('beforeend', HTML));
+
+  options.forEach(select => select.insertAdjacentHTML('beforeend', html));
 }
 
-async function currenyes() {
-  try {
-    const testAPi = await fetch(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${inputDate.value}/v1/currencies.json`
-    );
-    const data = await testAPi.json();
+async function fetchCurrenciesByDate(selectedDate) {
+  const res = await fetch(
+    `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${selectedDate}/v1/currencies.json`
+  );
 
-    currencysArr = Object.entries(data).map(([code, name]) => ({
+  if (!res.ok) throw new Error('Currencies fetch failed');
+
+  const data = await res.json();
+
+  currencysArr = Object.entries(data)
+    .map(([code, name]) => ({
       code: code.toUpperCase(),
       name,
-    }));
+    }))
+    .filter(c => FIAT_CODES.includes(c.code));
 
-    currencysArr = currencysArr.filter(c => FIAT_CODES.includes(c.code));
+  const ilsIndex = currencysArr.findIndex(c => c.code === 'ILS');
+  if (ilsIndex !== -1) currencysArr[ilsIndex].name = 'Palestinian shekel';
+}
 
-    currencysArr[currencysArr.findIndex(r => r.code === 'ILS')].name =
-      'Palestinian shekel';
+async function fetchRatesByDate(selectedDate) {
+  const res = await fetch(
+    `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${selectedDate}/v1/currencies/eur.json`
+  );
+
+  if (!res.ok) throw new Error('Rates fetch failed');
+
+  const data = await res.json();
+
+  ratesMap = new Map(
+    Object.entries(data.eur)
+      .map(([code, rate]) => [code.toUpperCase(), Number(rate)])
+      .filter(([code]) => FIAT_CODES.includes(code))
+  );
+}
+
+async function loadDataByDate(selectedDate, keepSelections = true) {
+  try {
+    setLoading(true);
+
+    const prev1 = currencyType1.value || 'USD';
+    const prev2 = currencyType2.value || 'EGP';
+
+    await fetchCurrenciesByDate(selectedDate);
+    await fetchRatesByDate(selectedDate);
 
     renderOptions();
+
+    if (defultOption[0]) {
+      defultOption[0].textContent = 'US Dollar';
+      defultOption[0].value = 'USD';
+    }
+
+    currencyType1.value = currencysArr.some(c => c.code === prev1)
+      ? prev1
+      : 'USD';
+
+    currencyType2.value = currencysArr.some(c => c.code === prev2)
+      ? prev2
+      : 'EGP';
+
   } catch (err) {
     console.error(err);
+  } finally {
+    setLoading(false);
   }
 }
 
-async function convert() {
-  try {
-    const rateToEU = await fetch(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${inputDate.value}/v1/currencies/eur.json`
-    );
-    const data = await rateToEU.json();
+function convertAmount(fromCode, toCode, amount) {
+  const fromRate = ratesMap.get(fromCode);
+  const toRate = ratesMap.get(toCode);
 
-    ratesArr = Object.entries(data.eur).map(([code, rate]) => ({
-      code: code.toUpperCase(),
-      rate,
-    }));
+  const num = Number(amount);
+  if (!fromRate || !toRate || !Number.isFinite(num)) return '';
 
-    ratesArr = ratesArr.filter(c => FIAT_CODES.includes(c.code));
-    return ratesArr;
-  } catch (err) {
-    console.error(err);
+  return ((num / fromRate) * toRate).toFixed(3);
+}
+
+function updateSecondFromFirst() {
+  if (isLoading) return;
+
+  if (!currency1.value) {
+    currency2.value = '';
+    return;
   }
-}
-loadDataByDate();
 
-defultOption[0].textContent = 'US Dollar';
-defultOption[0].value = 'USD';
-
-inputDate.addEventListener('change', async function () {
-  await currenyes();
-  await convert();
-
-  convertingFunctuin(
+  currency2.value = convertAmount(
     currencyType1.value,
     currencyType2.value,
-    currency1,
-    currency2
+    currency1.value
   );
-});
-
-currencyType1.addEventListener('change', function () {
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currencyType2.addEventListener('change', function () {
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currency1.addEventListener('input', function () {
-  convertingFunctuin(
-    currencyType1.value,
-    currencyType2.value,
-    currency1,
-    currency2
-  );
-});
-
-currency2.addEventListener('input', function () {
-  convertingFunctuin(
-    currencyType2.value,
-    currencyType1.value,
-    currency2,
-    currency1
-  );
-});
-
-function convertingFunctuin(t1, t2, c1, c2) {
-  loadDataByDate();
-  const fromCode = t1;
-  const toCode = t2;
-  const c1Rate = Number(ratesArr.find(r => r.code === fromCode)?.rate);
-  const c2Rate = Number(ratesArr.find(r => r.code === toCode)?.rate);
-
-  const converted = (Number(c1.value) / c1Rate) * c2Rate;
-  c2.value = converted.toFixed(3);
-  c2.textContent = c2.value;
 }
 
-async function loadDataByDate() {
-  await currenyes();
-  await convert();
+function updateFirstFromSecond() {
+  if (isLoading) return;
+
+  if (!currency2.value) {
+    currency1.value = '';
+    return;
+  }
+
+  currency1.value = convertAmount(
+    currencyType2.value,
+    currencyType1.value,
+    currency2.value
+  );
 }
+
+// EVENTS
+inputDate.addEventListener('change', async () => {
+  await loadDataByDate(inputDate.value, true);
+  updateSecondFromFirst();
+});
+
+currencyType1.addEventListener('change', updateSecondFromFirst);
+currencyType2.addEventListener('change', updateSecondFromFirst);
+
+currency1.addEventListener('input', updateSecondFromFirst);
+currency2.addEventListener('input', updateFirstFromSecond);
+
+swithc?.addEventListener('click', () => {
+  if (isLoading) return;
+
+  [currencyType1.value, currencyType2.value] = [
+    currencyType2.value,
+    currencyType1.value,
+  ];
+
+  [currency1.value, currency2.value] = [
+    currency2.value,
+    currency1.value,
+  ];
+
+  updateSecondFromFirst();
+});
+
+// INIT
+(async function init() {
+  await loadDataByDate(inputDate.value, false);
+  currency1.value = '1';
+  updateSecondFromFirst();
+})();
